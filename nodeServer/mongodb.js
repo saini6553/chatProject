@@ -4,19 +4,14 @@ const MongoClient = require('mongoose')
   if (err) throw err
   console.log(`MONGODB Has Successfully Connected`)
 
-  //let a = db.collection('mongoMy').find();
-  //console.log(a); 
-
-  // let a = db.collection("mongoMy").findOne({}, function(err, result) {
-  //   if (err) throw err;
-  //   console.log("\n mongoDb response ======>>>>",result,"\n");
-  //   db.close();
-  // });
 })
 const { Schema } = MongoClient;
 
 const mesgschema = new Schema({
     msg: { type: String },
+    from: { type: String },
+    to: { type: String },
+
     dateStamp: { type: Number }
 }, { _id: true });
 const msgModel = MongoClient.model('ChatMsgs',mesgschema);

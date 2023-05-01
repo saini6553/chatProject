@@ -1,45 +1,35 @@
-//import styles from './styles.module.css';
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import UserList from "./userlist";
 import Messages from "./messages";
 
-import io from "socket.io-client"; // Add this
 
-const socket = io.connect("http://localhost:4000");
+function ChatListMsg({ socket }) {
 
-function ChatListMsg(username = "", room = "") {
-  const [messagesRecieved, setMessagesReceived] = useState([]);
+  // const [messagesRecieved, setMessagesReceived] = useState([]);
+//  ///////////
+//  useEffect(() => {
+//   socket.on('messageResponse', (data) => setMessagesReceived([...messages, data]));
+// }, [socket, messagesRecieved]);
+//  //////////
 
-  //Runs whenever a socket event is recieved from the server
+  // useEffect(() => {
+  //   socket.on("receive_message", (data) => {
+  //     console.log(data,messagesRecieved);
+  //     setMessagesReceived((state) => [
+  //       ...state,
+  //       {
+  //         message: data.message,
+  //         username: data.username,
+  //         __createdtime__: data.__createdtime__,
+  //       },
+  //     ]);
+  //   });
+  //   return () => socket.off("receive_message");
+  // });
 
   useEffect(() => {
-    //  if (room !== '' && username !== '') {
-    socket.emit("join_room", { username, room });
-    //}
+   
   });
-
-  useEffect(() => {
-    socket.on("receive_message", (data) => {
-      console.log(data);
-      setMessagesReceived((state) => [
-        ...state,
-        {
-          message: data.message,
-          username: data.username,
-          __createdtime__: data.__createdtime__,
-        },
-      ]);
-    });
-    // Remove event listener on component unmount
-    return () => socket.off("receive_message");
-  }, [messagesRecieved]);
-
-  // dd/mm/yyyy, hh:mm:ss
-  // function formatDateFromTimestamp(timestamp) {
-  //   const date = new Date(timestamp);
-  //   return date.toLocaleString();
-  // }
-
   return (
     <div
       style={{
@@ -49,8 +39,8 @@ function ChatListMsg(username = "", room = "") {
         width: "100vw",
       }}
     >
-      <UserList message={messagesRecieved} />
-      <Messages />
+      <UserList socket={socket} />
+      <Messages socket={socket} />
     </div>
   );
 }

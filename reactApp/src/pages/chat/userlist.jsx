@@ -1,44 +1,59 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 
 const UserList = (props)=>{
     const [userList, setUserlist] = useState([]);
+    const socket = props.socket
+
+    const navigate = useNavigate();
+
+    function registrationPage(){
+      navigate("/", { replace: true });
+    }
 
     useEffect(() => {
-            
-            axios
-              .get("http://localhost:4000/findUserList")
-              .then((response) => {
-                console.log("=====>>",response.data);
-                setUserlist(response.data)
-                //navigate("/chat", { replace: true });
-              });
+      socket.on("savedUser", (data) => {
+        debugger
+        // const newState =data.map(obj => {
+        //   return obj;
+        // })
+        setUserlist(data)
+        console.log('=========>>>>>>>>',userList);
       });
-    
 
 
-    
+      // Remove event listener on component unmount
+      //return () => socket.off("receive_message");
+            // axios
+            //   .get("http://localhost:4000/findUserList")
+            //   .then((response) => {
+            //     console.log(Date.now(),"=====>>",response.data);
+            //     setUserlist(response.data)
+            //     //navigate("/chat", { replace: true });
+            //   });
+      },[socket, userList]);
+
+      function getChatMsg(username){
+        socket.emit("getChatMessages", { username });
+      }
+
     return(
         <div style={{width : "30%"}}>
-            <h3> messageList</h3>
+          <button onClick={ registrationPage}> Register User </button>
+            <h3> messageList for {localStorage.getItem('userName')}</h3>
             <ul style={{
-                listStyle : "none"
+                listStyle : "none",
+                border : "2px solid chartreuse", borderRadius:"20px"
             }}>
             {userList.map((obj)=>{
-                return(<li>
-                    <span >{obj.name}</span>
+                return(<li style={{height: "25px"}}>
+                    <span style={{border : "2px solid cyan",borderRadius:"10px"}} onClick={()=>{ getChatMsg(obj.name)}}>{obj.name}</span>
                 </li>)
-
             })}
             </ul>
-
         </div>
-
-
     )
-
-
 }
 
 export default UserList

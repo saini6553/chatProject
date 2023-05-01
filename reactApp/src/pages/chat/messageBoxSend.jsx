@@ -1,13 +1,20 @@
 import React, { useState } from "react";
 
-const SendMessage = ({ socket, username, room }) => {
+const SendMessage = (props) => {
   const [message, setMessage] = useState("");
+  const {socket} =  props;
 
-  const sendMessage = () => {
+  console.log("===",socket);
+  const sendMessagetoServer = () => {
     if (message !== "") {
-      const __createdtime__ = Date.now();
-      socket.emit("send_message", { username, room, message, __createdtime__ });
-      setMessage("");
+      //socket.emit("send_message", { username, room, message, __createdtime__ });
+      socket.emit('send_message', {
+        text: message,
+        name: localStorage.getItem('userName'),
+        id: `${socket.id}${Math.random()}`,
+        socketID: socket.id,
+      });
+     
     }
   };
 
@@ -27,7 +34,7 @@ const SendMessage = ({ socket, username, room }) => {
         onChange={(e) => setMessage(e.target.value)}
         value={message}
       />
-      <button className="btn btn-primary" onClick={sendMessage}>
+      <button className="btn btn-primary" onClick={sendMessagetoServer}>
         Send Message
       </button>
     </div>

@@ -1,27 +1,39 @@
 //const chatMsg = require('./mongodb')
-const {userModel, msgModel} = require('./mongodb')
+const { userModel, msgModel } = require("./mongodb");
+
 class msgUsername {
-    async saveMsg(userData){
-        try{
-          console.log("======Payload : ",userData)
+  users = [];
+  async saveUsername(userData) {
+    try {
+      console.log("======POST API Payload : ", userData);
+      this.users.push({name : userData.user});
+      return this.users;
+      //await userModel.create({ name: userData.user });
+      console.info("DATA SAVE ");
+    } catch (err) {
+      console.info("*******saveUsername Error====>>", err);
+      return err;
+    }
+  }
 
-          await userModel.create({ name : userData.user})
+  async saveMsg(userData) {
+    try {
+      console.log("======Payload : ", userData);
+      await userModel.create({ name: userData.user });
+      console.info("DATA SAVE ");
+    } catch (err) {
+      console.info("*******Error====>>", err);
+      return err;
+    }
+  }
 
-          await  chatMsg.create({
-            user:userData.user
-          }, function (err){
-            console.log("========>> --- ",err);
-          });
-          console.info("DATA SAVE ")
-        }
-        catch(err){
-          console.info('*******Error====>>',err)
-        }
-      }
-
-      async getList(){
-        return await userModel.find()
-      }
+  async getMsg(obj) {
+    return await userModel.find(obj);
+  }
+  async getList() {
+    await userModel.find();
+    return this.users;
+  }
 }
 
-module.exports = new msgUsername()
+module.exports = new msgUsername();
